@@ -1,4 +1,4 @@
-package com.example.aahaarapp;
+package com.example.ZeroHunger;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,12 +35,11 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
-import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class Receive extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
+public class Donate extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
     private GoogleMap mMap;
     GoogleApiClient mGoogleApiClient;
@@ -48,7 +47,7 @@ public class Receive extends AppCompatActivity implements OnMapReadyCallback, Go
     LocationRequest mLocationRequest;
     private int REQUEST_CODE = 11;
     SupportMapFragment mapFragment;
-    EditText mFullName,mDescription;
+    EditText mFullName,mFoodItem,mDescription,mPhone;
     Button mSubmitBtn;
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
@@ -58,8 +57,10 @@ public class Receive extends AppCompatActivity implements OnMapReadyCallback, Go
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_receive);
-        mFullName = findViewById(R.id.receivername);
+        setContentView(R.layout.activity_donate);
+        mFullName = findViewById(R.id.donorname);
+        mFoodItem = findViewById(R.id.fooditem);
+        mPhone = findViewById(R.id.phone);
         mDescription = findViewById(R.id.description);
         mSubmitBtn=findViewById(R.id.submit);
 
@@ -72,8 +73,6 @@ public class Receive extends AppCompatActivity implements OnMapReadyCallback, Go
         } else {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
         }
-
-
     }
 
     @Override
@@ -109,33 +108,44 @@ public class Receive extends AppCompatActivity implements OnMapReadyCallback, Go
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,15));
         mMap.addMarker(markerOptions).showInfoWindow();
 
+
         mSubmitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String fullname = mFullName.getText().toString().trim();
+                String fooditem= mFoodItem.getText().toString().trim();
                 String description= mDescription.getText().toString().trim();
-                String type= "Receiver";
+                String phone= mPhone.getText().toString().trim();
+                String type= "Donor";
 
                 if(TextUtils.isEmpty(fullname))
                 {
                     mFullName.setError("Name is Required.");
                     return;
                 }
-                if(TextUtils.isEmpty(description))
+
+                if(TextUtils.isEmpty(fooditem))
                 {
-                    mFullName.setError("Description is Required.");
+                    mFoodItem.setError("Required.");
                     return;
                 }
 
+                if(phone.length() < 10)
+                {
+                    mPhone.setError("Phone Number Must be >=10 Characters");
+                    return;
+                }
 
                 userID = fAuth.getCurrentUser().getUid();
-                //DocumentReference documentReference = fStore.collection("receiver").document(userID);
+                //DocumentReference documentReference = fStore.collection("donate").document(userID);
                 CollectionReference collectionReference = fStore.collection("user data");
 
                 GeoPoint geoPoint = new GeoPoint(location.getLatitude(),location.getLongitude());
                 Map<String,Object> user = new HashMap<>();
                 user.put("timestamp", FieldValue.serverTimestamp());
                 user.put("name",fullname);
+                user.put("food item",fooditem);
+                user.put("phone",phone);
                 user.put("description",description);
                 user.put("location",geoPoint);
                 user.put("userid",userID);
@@ -148,7 +158,7 @@ public class Receive extends AppCompatActivity implements OnMapReadyCallback, Go
                                 Toast.makeText(getApplicationContext(),"Success!",Toast.LENGTH_SHORT).show();
                                 Log.d(TAG,"Success!");
                                 //startActivity(new Intent(getApplicationContext(),MainActivity.class));
-                                Intent intent = new Intent(Receive.this, MainActivity.class);
+                                Intent intent = new Intent(Donate.this, MainActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
                             }
@@ -160,7 +170,6 @@ public class Receive extends AppCompatActivity implements OnMapReadyCallback, Go
                                 Log.w(TAG, "Error!", e);
                             }
                         });
-
             }
         });
     }
@@ -168,8 +177,6 @@ public class Receive extends AppCompatActivity implements OnMapReadyCallback, Go
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         mLocationRequest = new LocationRequest();
-        //mLocationRequest.setInterval(1000);
-        //mLocationRequest.setFastestInterval(1000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;

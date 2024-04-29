@@ -1,4 +1,4 @@
-package com.example.aahaarapp
+package com.example.ZeroHunger
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

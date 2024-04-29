@@ -1,4 +1,4 @@
-package com.example.aahaarapp;
+package com.example.ZeroHunger;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;

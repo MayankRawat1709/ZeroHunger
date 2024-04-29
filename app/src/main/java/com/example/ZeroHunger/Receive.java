@@ -1,4 +1,4 @@
-package com.example.aahaarapp;
+package com.example.ZeroHunger;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,7 +25,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -36,12 +35,11 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
-import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class Donate extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
+public class Receive extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
     private GoogleMap mMap;
     GoogleApiClient mGoogleApiClient;
@@ -49,7 +47,7 @@ public class Donate extends AppCompatActivity implements OnMapReadyCallback, Goo
     LocationRequest mLocationRequest;
     private int REQUEST_CODE = 11;
     SupportMapFragment mapFragment;
-    EditText mFullName,mFoodItem,mDescription,mPhone;
+    EditText mFullName,mDescription;
     Button mSubmitBtn;
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
@@ -59,10 +57,8 @@ public class Donate extends AppCompatActivity implements OnMapReadyCallback, Goo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_donate);
-        mFullName = findViewById(R.id.donorname);
-        mFoodItem = findViewById(R.id.fooditem);
-        mPhone = findViewById(R.id.phone);
+        setContentView(R.layout.activity_receive);
+        mFullName = findViewById(R.id.receivername);
         mDescription = findViewById(R.id.description);
         mSubmitBtn=findViewById(R.id.submit);
 
@@ -75,6 +71,8 @@ public class Donate extends AppCompatActivity implements OnMapReadyCallback, Goo
         } else {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
         }
+
+
     }
 
     @Override
@@ -110,44 +108,33 @@ public class Donate extends AppCompatActivity implements OnMapReadyCallback, Goo
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,15));
         mMap.addMarker(markerOptions).showInfoWindow();
 
-
         mSubmitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String fullname = mFullName.getText().toString().trim();
-                String fooditem= mFoodItem.getText().toString().trim();
                 String description= mDescription.getText().toString().trim();
-                String phone= mPhone.getText().toString().trim();
-                String type= "Donor";
+                String type= "Receiver";
 
                 if(TextUtils.isEmpty(fullname))
                 {
                     mFullName.setError("Name is Required.");
                     return;
                 }
-
-                if(TextUtils.isEmpty(fooditem))
+                if(TextUtils.isEmpty(description))
                 {
-                    mFoodItem.setError("Required.");
+                    mFullName.setError("Description is Required.");
                     return;
                 }
 
-                if(phone.length() < 10)
-                {
-                    mPhone.setError("Phone Number Must be >=10 Characters");
-                    return;
-                }
 
                 userID = fAuth.getCurrentUser().getUid();
-                //DocumentReference documentReference = fStore.collection("donate").document(userID);
+                //DocumentReference documentReference = fStore.collection("receiver").document(userID);
                 CollectionReference collectionReference = fStore.collection("user data");
 
                 GeoPoint geoPoint = new GeoPoint(location.getLatitude(),location.getLongitude());
                 Map<String,Object> user = new HashMap<>();
                 user.put("timestamp", FieldValue.serverTimestamp());
                 user.put("name",fullname);
-                user.put("food item",fooditem);
-                user.put("phone",phone);
                 user.put("description",description);
                 user.put("location",geoPoint);
                 user.put("userid",userID);
@@ -160,7 +147,7 @@ public class Donate extends AppCompatActivity implements OnMapReadyCallback, Goo
                                 Toast.makeText(getApplicationContext(),"Success!",Toast.LENGTH_SHORT).show();
                                 Log.d(TAG,"Success!");
                                 //startActivity(new Intent(getApplicationContext(),MainActivity.class));
-                                Intent intent = new Intent(Donate.this, MainActivity.class);
+                                Intent intent = new Intent(Receive.this, MainActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
                             }
@@ -172,6 +159,7 @@ public class Donate extends AppCompatActivity implements OnMapReadyCallback, Goo
                                 Log.w(TAG, "Error!", e);
                             }
                         });
+
             }
         });
     }
@@ -179,6 +167,8 @@ public class Donate extends AppCompatActivity implements OnMapReadyCallback, Goo
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         mLocationRequest = new LocationRequest();
+        //mLocationRequest.setInterval(1000);
+        //mLocationRequest.setFastestInterval(1000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;

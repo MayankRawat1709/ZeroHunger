@@ -9,8 +9,9 @@ android {
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "com.example.aahaarapp"
+        applicationId 'com.example.ZeroHunger'
         minSdkVersion 16
+        //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -31,6 +32,7 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    namespace 'com.example.ZeroHunger'
 }
 
 dependencies {
