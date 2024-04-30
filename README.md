@@ -18,14 +18,10 @@ Some screenshots of the Application:
 <p align="center" float="left">
 <table>
   <tr>
-    <td>Splash Screen</td>
-    <td>Home Screen</td>
     <td>Register Screen</td>
     <td>Login Screen</td>
   </tr>
   <tr>
-    <td><img src="https://user-images.githubusercontent.com/54005333/147682387-33b613c2-86a7-4622-80a0-0560e4733716.png" width="220"></td>
-    <td><img src="https://user-images.githubusercontent.com/54005333/147682390-c4d23438-4e4a-4eff-9471-5f881618c16f.png" width="220"></td>
     <td><img src="https://user-images.githubusercontent.com/54005333/147682402-6a9917ae-0734-4b37-a8ef-bfcc0f49f537.png" width="220"></td>
     <td><img src="https://user-images.githubusercontent.com/54005333/147682393-903ff2a0-2aac-48d4-92a5-0d3e2f403a84.png" width="220"></td>
   </tr>
@@ -48,11 +44,9 @@ Some screenshots of the Application:
  <table>
   <tr>
     <td>History Screen</td>
-    <td>About Screen</td>
   </tr>
   <tr>
     <td><img src="https://user-images.githubusercontent.com/54005333/147683209-1f154899-b993-43e2-8536-d8fceb61cbe5.png" width="220"></td>
-    <td><img src="https://user-images.githubusercontent.com/54005333/147683224-83af7bc1-f8c6-4b6b-bd26-3ec9b13813a3.png" width="220"></td>
   </tr>
  </table>
  </p>
