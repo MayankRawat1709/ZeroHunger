@@ -43,10 +43,8 @@ Some screenshots of the Application:
  </table>
  <table>
   <tr>
-    <td>History Screen</td>
   </tr>
   <tr>
-    <td><img src="https://user-images.githubusercontent.com/54005333/147683209-1f154899-b993-43e2-8536-d8fceb61cbe5.png" width="220"></td>
   </tr>
  </table>
  </p>
